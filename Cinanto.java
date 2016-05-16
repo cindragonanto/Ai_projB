@@ -198,4 +198,52 @@ public class Cinanto implements Player{
 			System.out.print("\n");
 		}		
 	}
+	
+	//m is the move that the opponent made
+	public int opponentMove(Move m) {
+		if (canCapture(m.Row, m.Col) || isShared(m.Row, m.Col)){
+			return 1;
+		}
+		else if (!(canCapture(m.Row, m.Col))){
+			return 0;
+		}
+		else{
+			return -1;
+		}
+	}
+	private boolean canCapture (int x, int y){
+		if (board[x][y] == '+'){
+		
+			if (x%2 == 0 && y%2 == 0)
+			{
+				return (canGet(x-1,y-1) || canGet(x+1,y+1));
+			}
+			if (x%2 == 0 && y%2 != 0)
+			{
+				return ( canGet(x-1,y) || canGet(x+1,y));
+			}
+			if (x%2 != 0 && y%2 == 0)
+			{	
+				return (canGet(x,y-1) || canGet(x,y+1));
+			}
+		}
+		return false;
+	}
+	private boolean isShared(int x, int y)
+	{   
+		// for each position case, check if the adjacent cells can be captured
+		if (x%2 == 0 && y%2 == 0)
+		{
+			return (board[x][y] == '+' && canGet(x-1,y-1) && canGet(x+1,y+1));
+		}
+		if (x%2 == 0 && y%2 != 0)
+		{
+			return (board[x][y] == '+' && canGet(x-1,y) && canGet(x+1,y));
+		}
+		if (x%2 != 0 && y%2 == 0)
+		{
+			return (board[x][y] == '+' && canGet(x,y-1) && canGet(x,y+1));
+		}
+		return true;
+	}
 }
