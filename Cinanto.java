@@ -2,6 +2,7 @@ package ai;
 
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 
 import aiproj.hexifence.*;
@@ -12,7 +13,7 @@ public class Cinanto implements Player{
 	//p is the piece that the player uses, RED or BLUE
 	//should initialize the needed parts of the ai
 	
-	class MinimaxTree  {
+/*	class MinimaxTree  {
 		
 		private char[][] 			board;
 		private Move				move;
@@ -65,10 +66,11 @@ public class Cinanto implements Player{
 		}
 		
 	}
-	
+*/	
 	private char board[][];
 	private int  size; 
 	private int boundBoardSize;
+	private int player;
 	private boolean canAccept(int x, int y, int n)
 	{
 		// return if the coordinate falls within the bounds of the board
@@ -77,6 +79,7 @@ public class Cinanto implements Player{
 
 	public int init(int n, int p) {
 		int i = 0, j = 0;
+		this.player = p;
 		size = 4*n -1;
 		this.boundBoardSize = n;
 		board = new char[size][size];
@@ -121,7 +124,26 @@ public class Cinanto implements Player{
 		//}
 		//board[][]
 		int i,j;
-		for (i = 0; i< size; i++){
+		
+		Random random = new Random();
+		Move move = new Move();
+		
+		int col = random.nextInt(4*boundBoardSize - 1);
+		int row = random.nextInt(4*boundBoardSize - 1);
+		
+		while (canAccept(row, col, boundBoardSize) == false || board[row][col]=='-') {
+			col = random.nextInt(4*boundBoardSize - 1);
+			row = random.nextInt(4*boundBoardSize - 1);
+		}
+		
+		move.Col = col;
+		move.Row = row;
+		move.P = this.player;
+		captureCell(player, row, col);
+		updateBoard(player, row, col);
+		return move;
+		
+		/*for (i = 0; i< size; i++){
 			for (j = 0; j<size ; j++){			
 				if (canAccept(i,j,boundBoardSize)){
 					if (i%2 == 0){
@@ -138,14 +160,147 @@ public class Cinanto implements Player{
 					board[i][j] = '-';
 				}
 			}
+		}*/
+		
+	//	return null;
+	}
+	private int getCent(int x, int y){
+		int xCent =0, yCent = 0;
+
+		if (yCent<0 || xCent<0 ||yCent > 4*boundBoardSize - 2||xCent>4*boundBoardSize - 2 ){
+			if (x%2 == 0 && y%2 == 0){
+				xCent = x-1;
+				yCent = y-1;
+				if (yCent<0 || xCent<0){ 
+					xCent = x+1;
+					yCent = y+1;
+				}
+			}
+			if (x%2 == 0 && y%2 != 0)
+			{	xCent = x-1;
+				yCent = y;
+				if (yCent<0 || xCent<0){ 
+					xCent = x+1; 
+					yCent = y;
+				}
+			}
+			if (x%2 != 0 && y%2 == 0)
+			{	xCent = x;
+				yCent = y-1;
+				if (yCent<0 || xCent<0){ 
+					xCent = x; 
+					yCent = y+1;
+				}
+			}
+		}
+		return (x*10 + y);
+	}
+	private void captureCell(int p, int x, int y){
+		int xCent = 0, yCent = 0;
+		System.out.println("uptohere");
+		if (canCapture(x,y)&& canAccept(x,y, boundBoardSize)){
+			xCent = getCent(x,y)/10;
+			yCent = getCent(x,y)%10;
+			System.out.print(xCent +" "+ yCent);
+			if (p == 1){
+			board[xCent][yCent] = 'b';
+			}
+			else{
+			board[xCent][yCent] = 'r';
+			}
+		}
+	}
+	private void updateBoard(int p, int x, int y){
+		if (p == 1){
+			board[x][y] = 'B';
+		}
+		else{
+			board[x][y] = 'R';
 		}
 		
-		return null;
+	}
+	private boolean isShared(int x, int y)
+	{   
+		// for each position case, check if the adjacent cells can be captured
+		if (x%2 == 0 && y%2 == 0)
+		{
+			return (board[x][y] == '+' && canGet(x-1,y-1) && canGet(x+1,y+1));
+		}
+		if (x%2 == 0 && y%2 != 0)
+		{
+			return (board[x][y] == '+' && canGet(x-1,y) && canGet(x+1,y));
+		}
+		if (x%2 != 0 && y%2 == 0)
+		{
+			return (board[x][y] == '+' && canGet(x,y-1) && canGet(x,y+1));
+		}
+		return true;
+	}
+	private boolean canGet(int xCent, int yCent)
+	{
+		if (yCent<0 || xCent<0 ||yCent > 4*boundBoardSize - 2||xCent>4*boundBoardSize - 2 ){
+			return false;
+		}
+		int emptyCount = 0;
+		// iterate through the surrounding positions
+        for (int i = -1; i <= 1; i++)
+        {
+        	for (int j = -1; j <= 1; j++)
+        	{
+        		// for each edge, if it is empty (signified by +), if so add to the count of empty edges
+        		if (i+j!=0 && board[xCent+i][yCent+j] == ('+'))
+        		{	
+        			emptyCount += 1;
+        			// return false if there is more than one empty edge
+        			if (emptyCount > 1)
+        			{    
+        				return false;
+        			}
+        		}
+        	}
+ 
+        }
+        // if there is only one empty edge, it is capturable
+        if (emptyCount == 1)
+        {	
+        	return true;
+        }
+        // if this is reached, it must be false (empty count is 0)
+        return false;
+	}
+	private boolean canCapture (int x, int y){
+		if (board[x][y] == '+'&& canAccept(x,y, boundBoardSize)){
+			
+			if (x%2 == 0 && y%2 == 0)
+			{	
+				return (canGet(x-1,y-1) || canGet(x+1,y+1));
+			}
+			if (x%2 == 0 && y%2 != 0)
+			{
+				return ( canGet(x-1,y) || canGet(x+1,y));
+			}
+			if (x%2 != 0 && y%2 == 0)
+			{	
+				return (canGet(x,y-1) || canGet(x,y+1));
+			}
+		}
+		return false;
 	}
 
 	//m is the move that the opponent made
 	public int opponentMove(Move m) {
-		return 0;
+		if (canCapture(m.Row, m.Col) || isShared(m.Row, m.Col)){
+			captureCell(m.P, m.Row, m.Col);
+			updateBoard(m.P, m.Row, m.Col);
+			return 1;
+		}
+		else if (!(canCapture(m.Row, m.Col))){
+			updateBoard(m.P, m.Row, m.Col);
+			return 0;
+		}
+		else{
+			return -1;
+		}
 	}
 	public static char[][] cloneBoard(char[][] board) {
 	    int length = board.length;
@@ -177,6 +332,7 @@ public class Cinanto implements Player{
 			}		
 		}
 		if (redCount < blueCount){
+			
 			return 1; // blue wins
 		}
 		else if (redCount > blueCount){
@@ -186,71 +342,40 @@ public class Cinanto implements Player{
 			return 3; // draw
 		}
 	}
-
-	//print a representation of your board to stdout
-	public void printBoard(PrintStream output) {
-		char [][] nBoard;
-		nBoard = cloneArray(board);
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++){
-				System.out.print(newBoard[i][j]);
-			}
-			System.out.print("\n");
-		}		
-	}
-	
-	//m is the move that the opponent made
-	public int opponentMove(Move m) {
-		if (canCapture(m.Row, m.Col) || isShared(m.Row, m.Col)){
-			return 1;
-		}
-		else if (!(canCapture(m.Row, m.Col))){
-			return 0;
-		}
-		else{
-			return -1;
-		}
-	}
-	private boolean canCapture (int x, int y){
-		if (board[x][y] == '+'){
-		
-			if (x%2 == 0 && y%2 == 0)
-			{
-				return (canGet(x-1,y-1) || canGet(x+1,y+1));
-			}
-			if (x%2 == 0 && y%2 != 0)
-			{
-				return ( canGet(x-1,y) || canGet(x+1,y));
-			}
-			if (x%2 != 0 && y%2 == 0)
-			{	
-				return (canGet(x,y-1) || canGet(x,y+1));
-			}
-		}
-		return false;
-	}
-	private boolean isShared(int x, int y)
+/*
+	//find out the coordinate of the adjacent centre
+	private int otherCenter(int x, int y, int xCent, int yCent)
 	{   
-		// for each position case, check if the adjacent cells can be captured
-		if (x%2 == 0 && y%2 == 0)
+		int xPartner = 0, yPartner = 0;
+		int adjXCent = 0, adjYCent = 0;
+		xPartner = xCent - x;
+		yPartner = yCent - y;
+		adjXCent = x - xPartner;
+		adjYCent = y - yPartner;
+		return 0;
+	}
+	private boolean isChain(){
+		for (int xCent = 1; xCent < 4*boundBoardSize -1; xCent += 2)
 		{
-			return (board[x][y] == '+' && canGet(x-1,y-1) && canGet(x+1,y+1));
-		}
-		if (x%2 == 0 && y%2 != 0)
-		{
-			return (board[x][y] == '+' && canGet(x-1,y) && canGet(x+1,y));
-		}
-		if (x%2 != 0 && y%2 == 0)
-		{
-			return (board[x][y] == '+' && canGet(x,y-1) && canGet(x,y+1));
-		}
+			for (int yCent = 1; yCent < 4*boundBoardSize -1; yCent += 2)
+			{
+				if (canAccept(xCent,yCent) && board[xCent][yCent] == '-' && canChain(xCent,yCent))
+				{ 
+					
+					
+					
+					
+					
+					
+				}
+			}		
+		} 
+		
 		return true;
 	}
-	private boolean canGet(int x, int y)
+	//is it part of a chain. argument centre
+	public boolean canChain(int xCent, int yCent)
 	{
-		if (y<0 || x<0 ||y > 4*boundBoardSize - 2||x>4*boundBoardSize - 2 ){
-			return false;
-		}
 		int emptyCount = 0;
 		// iterate through the surrounding positions
         for (int i = -1; i <= 1; i++)
@@ -258,11 +383,12 @@ public class Cinanto implements Player{
         	for (int j = -1; j <= 1; j++)
         	{
         		// for each edge, if it is empty (signified by +), if so add to the count of empty edges
-        		if (i+j!=0 && board[x+i][y+j] == ('+'))
-        		{	
+        		if (i+j!=0 && board[xCent+i][yCent+j] == ('+'))
+        		{
         			emptyCount += 1;
-        			// return false if there is more than one empty edge
-        			if (emptyCount > 1)
+        			chain.x
+        			// return false if there is more than two empty edge
+        			if (emptyCount > 2)
         			{    
         				return false;
         			}
@@ -271,11 +397,23 @@ public class Cinanto implements Player{
  
         }
         // if there is only one empty edge, it is capturable
-        if (emptyCount == 1)
+        if (emptyCount == 2)
         {
         	return true;
         }
         // if this is reached, it must be false (empty count is 0)
         return false;
+	}*/
+
+	//print a representation of your board to stdout
+	public void printBoard(PrintStream output) {
+		char [][] nBoard;
+		nBoard = cloneBoard(board);
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++){
+				System.out.print(this.board[i][j]);
+			}
+			System.out.print("\n");
+		}		
 	}
 }
