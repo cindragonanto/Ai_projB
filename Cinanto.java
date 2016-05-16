@@ -246,4 +246,36 @@ public class Cinanto implements Player{
 		}
 		return true;
 	}
+	private boolean canGet(int x, int y)
+	{
+		if (y<0 || x<0 ||y > 4*boundBoardSize - 2||x>4*boundBoardSize - 2 ){
+			return false;
+		}
+		int emptyCount = 0;
+		// iterate through the surrounding positions
+        for (int i = -1; i <= 1; i++)
+        {
+        	for (int j = -1; j <= 1; j++)
+        	{
+        		// for each edge, if it is empty (signified by +), if so add to the count of empty edges
+        		if (i+j!=0 && board[x+i][y+j] == ('+'))
+        		{	
+        			emptyCount += 1;
+        			// return false if there is more than one empty edge
+        			if (emptyCount > 1)
+        			{    
+        				return false;
+        			}
+        		}
+        	}
+ 
+        }
+        // if there is only one empty edge, it is capturable
+        if (emptyCount == 1)
+        {
+        	return true;
+        }
+        // if this is reached, it must be false (empty count is 0)
+        return false;
+	}
 }
