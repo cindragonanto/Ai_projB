@@ -4,7 +4,7 @@ import java.util.List;
 
 public abstract class MinimaxTree  {
 	
-	private char[][] 			board;
+	protected char[][] 			board;
 	private Move				move;
 	
 	private MinimaxTree			bestMove;
