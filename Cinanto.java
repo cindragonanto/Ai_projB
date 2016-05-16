@@ -76,7 +76,7 @@ public class Cinanto implements Player{
 		// return if the coordinate falls within the bounds of the board
 		return (Math.abs(x-y) <= 2*n - 1);
 	}
-
+	//initialises the board
 	public int init(int n, int p) {
 		int i = 0, j = 0;
 		this.player = p;
@@ -127,7 +127,7 @@ public class Cinanto implements Player{
 		
 		Random random = new Random();
 		Move move = new Move();
-		
+		//generate random numbers as columns and rows
 		int col = random.nextInt(4*boundBoardSize - 1);
 		int row = random.nextInt(4*boundBoardSize - 1);
 		
@@ -139,6 +139,7 @@ public class Cinanto implements Player{
 		move.Col = col;
 		move.Row = row;
 		move.P = this.player;
+		//if cell is capturable capture and update board
 		captureCell(player, row, col);
 		updateBoard(player, row, col);
 		return move;
@@ -164,6 +165,7 @@ public class Cinanto implements Player{
 		
 	//	return null;
 	}
+	// get coordiante of the centre given an edge
 	private int getCent(int x, int y){
 		int xCent =0, yCent = 0;
 
@@ -195,6 +197,7 @@ public class Cinanto implements Player{
 		}
 		return (x*10 + y);
 	}
+	// change the '-' into 'r' ot 'b' depending on which player captured the cell
 	private void captureCell(int p, int x, int y){
 		int xCent = 0, yCent = 0;
 		System.out.println("uptohere");
@@ -210,6 +213,7 @@ public class Cinanto implements Player{
 			}
 		}
 	}
+	//update baord after a move
 	private void updateBoard(int p, int x, int y){
 		if (p == 1){
 			board[x][y] = 'B';
@@ -219,6 +223,7 @@ public class Cinanto implements Player{
 		}
 		
 	}
+	//check if edge is shared between two cells
 	private boolean isShared(int x, int y)
 	{   
 		// for each position case, check if the adjacent cells can be captured
@@ -236,6 +241,7 @@ public class Cinanto implements Player{
 		}
 		return true;
 	}
+	//check if cell can be captured
 	private boolean canGet(int xCent, int yCent)
 	{
 		if (yCent<0 || xCent<0 ||yCent > 4*boundBoardSize - 2||xCent>4*boundBoardSize - 2 ){
@@ -288,6 +294,7 @@ public class Cinanto implements Player{
 	}
 
 	//m is the move that the opponent made
+	//check if opponent move is valid, capture cell if can be captured, update board
 	public int opponentMove(Move m) {
 		if (canCapture(m.Row, m.Col) || isShared(m.Row, m.Col)){
 			captureCell(m.P, m.Row, m.Col);
@@ -302,6 +309,7 @@ public class Cinanto implements Player{
 			return -1;
 		}
 	}
+	// to copy board for future use when want to generate children for trees
 	public static char[][] cloneBoard(char[][] board) {
 	    int length = board.length;
 	    char[][] newBoard = new char[length][board[0].length];
