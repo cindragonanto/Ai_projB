@@ -1,5 +1,6 @@
 package ai;
  
+import java.util.List;
 import java.util.Scanner;
  
 /**
@@ -13,21 +14,23 @@ public class HexifenceSolution {
 
         Cinanto player = new Cinanto();
 
-    	player.init(3, 2);
+    	player.init(2, 2);
 
     	player.printBoard(System.out);
 
     	Move temp;
 		
-    	for (int i = 0; i < 72; i++) {
+    	for (int i = 0; i < 3; i++) {
     		
         	temp = player.makeMove();
-        	System.out.println(temp.Col + ", " + temp.Row);
         	
     	}
-    	
-    	System.out.println("Winner - " + player.getWinner());
-    	
+    	HexifenceMinimaxTree.playerP = Piece.RED;
+    	Move tempMove = HexifenceMinimaxTree.HexifenceMinimaxMove(player.board, 2);
+
+    	// THIS!!!!!!!!!!!!!
+    	HexifenceMinimaxTree.PrintMove(tempMove);    	
+    	player.board[tempMove.Row][tempMove.Col] = 'Q';
     	player.printBoard(System.out);
 		
     }
