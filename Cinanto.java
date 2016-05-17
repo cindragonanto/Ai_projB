@@ -102,7 +102,8 @@ public class Cinanto implements Player{
 	 * @return move to make
 	 */
 	public Move makeMove() {
-		/*
+		
+		
 		int x = (int)(Math.random() * size);
 		int y = (int)(Math.random() * size);
 		
@@ -117,11 +118,11 @@ public class Cinanto implements Player{
 		temp.P = p;
 		
 		moveResult(temp);
-		
-		return temp;
-		*/
-		
-		return HexifenceMinimaxTree.HexifenceMinimaxMove(board, p);
+				
+		HexifenceMinimaxTree.playerP = p;
+		Move out = HexifenceMinimaxTree.HexifenceMinimaxMove(board, p);
+		moveResult(out);
+		return out;	
 	}
 
 	/**

@@ -7,6 +7,11 @@ import java.util.List;
 
 import ai.*;
 
+/**
+ * Hexifence MinimaxTree implementation
+ * @author campbellw
+ *
+ */
 public final class HexifenceMinimaxTree extends MinimaxTree {
 
 	// piece code for the player
@@ -14,7 +19,12 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 	
 	// piece code for this current move
 	private final int p;
-	private final static int maxDepth = 7;
+	private static int maxDepth = 2;
+	
+	private static double chainAvgConst1 = 0.3;
+	private static double chainAvgConst2 = 5;
+	
+	private final static int winScore = 10;
 	
 	public static void PrintMove(Move move) {
 		System.out.println(move.Col + ", " + move.Row + " for " + move.P);
@@ -77,24 +87,24 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 			boolean isMin) {
 		int outcome = Cinanto.getWinner(board);
 		if (outcome == Piece.INVALID) {
-			return 0;
+			return -999;
 		}
 		
 		// check who has won
 		
 		// blue 
 		if (playerP == Piece.BLUE && outcome == Piece.BLUE) {
-			return 1;
+			return winScore;
 		}
 		if (playerP == Piece.BLUE && outcome == Piece.RED) {
-			return -1;
+			return -winScore;
 		}
 		// red
 		if (outcome == Piece.BLUE) {
-			return -1;
+			return -winScore;
 		}
 		if (outcome == Piece.RED) {
-			return 1;
+			return winScore;
 		}
 		return 0;
 	}
@@ -126,9 +136,13 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 	@Override
 	protected int HeuristicFunction(Move move, char[][] board, 
 			boolean isMin) {
-		//return GreedyHeuristic(move, board, isMin)+
-		ChainHeuristicFunction(move,board,isMin);
-		return GreedyHeuristic(move, board, isMin);
+		int score = GreedyHeuristic(move, board, isMin)+
+				ChainHeuristicFunction(move,board,isMin);
+		System.out.println("Win score: " + score);
+		if (score >= winScore-1) return winScore - 1;
+		if (score <= -winScore+1) return -winScore +1;
+		
+		return score;
 	}
 
 	private List<Chain> getChains() {
@@ -261,21 +275,32 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 		for (Chain i : temp) {
 			chainSize+=i.x.size();
 		}
+		
 		double chainAvgSize = (double) chainSize /  (double) chainCount;
 		
-		// adjust these
-		if (isMin) return (chainCount%2 == 1 ? -2 : 2) + (int) (5 / (chainAvgSize == 0 ? 1 : chainAvgSize)) ;
-		return (chainCount%2 == 1 ? 2 : -2) + (int) (5 / (chainAvgSize == 0 ? 1 : chainAvgSize)); 
+		// blue moves first
+		if (playerP == Piece.BLUE) {
+			chainAvgSize = (chainAvgSize * chainAvgConst1);
+		} else {
+			chainAvgSize = (chainAvgConst2/chainAvgSize);
+		}
+		
+		// adjust these weights
+		if (isMin) return (chainCount%2 == 1 ? -2 : 2) + (int) chainAvgSize ;
+		return (chainCount%2 == 1 ? 2 : -2) + (int) chainAvgSize; 
 	}
 	
 	@Override
 	protected void BuildChildNodes() {
 		
-		for (Move i : Cinanto.getMoves(board, p))
+		for (Move i : Cinanto.getMoves(board, p)) {
+			System.out.println("Checking move: " + i.Col + ", " + i.Row);
 			if (Cinanto.isCaptureMove(board, i)) nodes.add(new 
 					HexifenceMinimaxTree(isMin, board, i, p));
 			else nodes.add(new HexifenceMinimaxTree(!isMin,
 					board, i, p));
+		}
+			
 	}
 
 	@Override

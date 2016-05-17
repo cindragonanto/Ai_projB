@@ -1,0 +1,8 @@
+The agent is makes use of a Minimax tree to determine the best moves to make. The abstract MinimaxTree class provides a generic set of functionality (alpha-beta pruning, depth-limiting) for minimax that is used to look ahead and determine the best moves to make. The depth limiting is required because of the high branching factor of the game (especially with the 3-size board). The HexifenceMinimaxTree class extends the MinimaxTree and specifies a series of different functions that allow the MinimaxTree to work for the Hexifence game. 
+
+The heuristic function makes use of three key components: 
+A greedy heuristic function which returns the difference between the number of cells captured by the agent and the opponent. This works to encourage the Minimax algorithm to make moves that increase the number of cells captured, although because it is greedy - it tends to be short-sighted.
+We then balance this with a chain heuristic which aims to get the chains in a position that is favourable to the agent. Because it is optimal for the player to move with an odd number of chains, while the opponent with an even number of chains,  this provides a heuristic which can be taken into account in play. Unfortunately in practice, this is not that effective.
+The last aspect is chain length - the agent aims to optimise its chain length, while having a short chain length for the opponent. This heuristic is not ideal either, but it balances the greedy aspects of the first heuristic.
+
+These three aspects are weighted against each other, with the weights determined through playing the game multiple times. It was difficult to balance them, however.

@@ -3,6 +3,11 @@ package ai;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * MinimaxTree class
+ * @author campbellw
+ *
+ */
 public abstract class MinimaxTree  {
 	
 	protected char[][] 			board;
