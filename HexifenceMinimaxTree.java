@@ -228,18 +228,6 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 	}
 	
 	/**
-	 * returns whether or not a cell is chained with a neighbour
-	 * @param i
-	 * @param j
-	 * @param i2
-	 * @param j2
-	 * @return the level of chaining
-	 */
-	private int chainedWith(int i, int j, int i2, int j2) {
-		return 0;
-	}
-	
-	/**
 	 * returns the number of edges that are taken
 	 * @param board
 	 * @param i
@@ -267,10 +255,17 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 	private int ChainHeuristicFunction(Move move, char[][] board, 
 			boolean isMin) {
 		
-		int score = getChains().size();
-		// IF EVEN OR ODD OR WHATEVER DO THAT HERE
-			
-		return score;
+		List<Chain> temp = getChains();
+		int chainCount = temp.size();
+		int chainSize = 0;
+		for (Chain i : temp) {
+			chainSize+=i.x.size();
+		}
+		double chainAvgSize = (double) chainSize /  (double) chainCount;
+		
+		// adjust these
+		if (isMin) return (chainCount%2 == 1 ? -2 : 2) + (int) (5 / (chainAvgSize == 0 ? 1 : chainAvgSize)) ;
+		return (chainCount%2 == 1 ? 2 : -2) + (int) (5 / (chainAvgSize == 0 ? 1 : chainAvgSize)); 
 	}
 	
 	@Override
