@@ -9,11 +9,13 @@ public abstract class MinimaxTree  {
 	private Move				move;
 	
 	private MinimaxTree			bestMove;
-	private static final int	maxScore = 999;
+	
+	protected static final int	maxScore = 999;
 	protected static final int	minScore = -999;	
 	
 	protected final boolean 	isMin;
-	protected List<MinimaxTree>	nodes = new ArrayList<MinimaxTree>();
+	
+	protected final List<MinimaxTree>	nodes = new ArrayList<MinimaxTree>();
 	
 	// 
 	/**
@@ -179,9 +181,7 @@ public abstract class MinimaxTree  {
 				if (maxB <= alpha) break;
 			}
 		}
-		
 		return maxB;
-		
 	}
 	
 	/** 
