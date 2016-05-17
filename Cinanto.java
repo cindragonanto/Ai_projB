@@ -54,7 +54,7 @@ public class Cinanto implements Player{
 	 * @param n size of the game
 	 * @return boolean
 	 */
-	private static boolean validPos(int x, int y, int n) {
+	static boolean validPos(int x, int y, int n) {
 		// check through to ensure the positions are valid
 		return (Math.abs(x-y) <= 2*n - 1) && 
 				(x >= 0) && (y >= 0) &&
@@ -102,7 +102,7 @@ public class Cinanto implements Player{
 	 * @return move to make
 	 */
 	public Move makeMove() {
-		
+		/*
 		int x = (int)(Math.random() * size);
 		int y = (int)(Math.random() * size);
 		
@@ -119,7 +119,9 @@ public class Cinanto implements Player{
 		moveResult(temp);
 		
 		return temp;
+		*/
 		
+		return HexifenceMinimaxTree.HexifenceMinimaxMove(board, p);
 	}
 
 	/**
@@ -137,8 +139,6 @@ public class Cinanto implements Player{
 		return 0;	
 		
 	}
-	
-	
 	
 	/**
 	 * updates the player's internal state given a move

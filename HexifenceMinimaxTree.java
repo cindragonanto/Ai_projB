@@ -14,7 +14,7 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 	
 	// piece code for this current move
 	private final int p;
-	private final static int maxDepth = 12;
+	private final static int maxDepth = 7;
 	
 	public static void PrintMove(Move move) {
 		System.out.println(move.Col + ", " + move.Row + " for " + move.P);
@@ -126,8 +126,9 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 	@Override
 	protected int HeuristicFunction(Move move, char[][] board, 
 			boolean isMin) {
-		
-		return GreedyHeuristic(move, board, isMin)+ChainHeuristicFunction(move,board,isMin);
+		//return GreedyHeuristic(move, board, isMin)+
+		ChainHeuristicFunction(move,board,isMin);
+		return GreedyHeuristic(move, board, isMin);
 	}
 
 	private List<Chain> getChains() {
@@ -150,11 +151,18 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 					tempChain = new Chain();
 					checkedCells.add(new Integer[]{i,j});
 					for (Integer[] k : neighbouringCells(i,j)) {
-						if (!valueInArray(k[0],k[1],checkedCells)) {
+						// check if the value is valid
+						if (!valueInArray(k[0],k[1],checkedCells) && 
+								Cinanto.validPos(k[0], k[1], 
+										(board.length+1)/4)) {
+							// check if the number of edges taken is 4
 							if (CellEdges(board, k[0],k[1]) == 4) {
 								tempEdge = sharedEdge(k[0],k[1],i,j);
+								// check if the shared edge is empty
 								if (board[tempEdge[0]][tempEdge[1]] == '+') {
 									tempChain.Add(k[0], k[1]);
+									// add in neighbouring chains, if they
+									// haven't already been checked
 									for (Integer[] q : neighbouringCells
 											(k[0],k[1]))
 										if (!valueInArray
@@ -162,9 +170,12 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 											queue.add(q);
 								}
 							}
+							// this cell isn't valid, so don't check it again
 							checkedCells.add(new Integer[]{k[0],k[1]});
 						}
 					}
+				// add our value to the return chain
+				temp.add(tempChain);
 				}
 			}
 		}
