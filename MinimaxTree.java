@@ -1,5 +1,6 @@
 package ai;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class MinimaxTree  {
@@ -9,19 +10,41 @@ public abstract class MinimaxTree  {
 	
 	private MinimaxTree			bestMove;
 	private static final int	maxScore = 999;
-	private static final int	minScore = -999;	
+	protected static final int	minScore = -999;	
 	
 	protected final boolean 	isMin;
-	protected List<MinimaxTree>	nodes;
+	protected List<MinimaxTree>	nodes = new ArrayList<MinimaxTree>();
 	
-	// scoring function
+	// 
+	/**
+	 * scoring function
+	 * @param move
+	 * @param board
+	 * @param isMin
+	 * @return score
+	 */
 	protected abstract int  ScoringFunction(Move move, char[][] board,
 			boolean isMin);
-	// heuristic to be called for depth limited minimax
+	// 
+	/** 
+	 * heuristic to be called for depth limited minimax
+	 * @param move
+	 * @param board
+	 * @param isMin
+	 * @return score
+	 */
 	protected abstract int  HeuristicFunction(Move move, char[][] board,
 			boolean isMin);
-	// builds child nodes
+	// 
+	/**
+	 * builds child nodes
+	 */
 	protected abstract void BuildChildNodes();
+	
+	/**
+	 * update the board given the move
+	 */
+	protected abstract void UpdateBoard();
 	
 	public MinimaxTree(boolean isMin, char[][] board, Move move) {
 		this.isMin = isMin;
@@ -29,22 +52,35 @@ public abstract class MinimaxTree  {
 		this.move  =  move;
 	}
 	
+	/**
+	 * returns score
+	 * @return
+	 */
 	public int GetScore() {
 		return this.GetScore(null, null);
 	}
-			
+	
+	/**
+	 * returns score with depth limiting
+	 * @param depth
+	 * @param maxDepth
+	 * @return
+	 */
 	public int GetScore(Integer depth, Integer maxDepth) {
-		// check if this is has no children
-		if (nodes.isEmpty()) {
-			return ScoringFunction(move, board, isMin);
-		}
+		
+		UpdateBoard();
 		
 		// check if the depth limit is reached
 		if (depth != null && maxDepth != null && (depth >= maxDepth)) {
 			return HeuristicFunction(move, board, isMin);
 		}
-		
+				
 		BuildChildNodes();
+		
+		// check if this is has no children
+		if (nodes.isEmpty()) {
+			return ScoringFunction(move, board, isMin);
+		}
 		
 		// for the maximum case
 		if (!isMin) {
@@ -80,23 +116,34 @@ public abstract class MinimaxTree  {
 		return min;
 	}
 	
+	/**
+	 * returns score with alpha-beta pruning
+	 * @param depth
+	 * @param maxDepth
+	 * @param alpha
+	 * @param beta
+	 * @return
+	 */
 	public int GetScoreABP(Integer depth, Integer maxDepth, Integer alpha, Integer beta) {
+
+		UpdateBoard();
+		
+		// check if the depth limit is reached
+		if (depth != null && maxDepth != null && (depth >= maxDepth)) {
+			return HeuristicFunction(move, board, isMin);
+		}
+				
+		BuildChildNodes();
+		
 		// check if this is has no children
 		if (nodes.isEmpty()) {
 			return ScoringFunction(move, board, isMin);
-		}
-		
-		// check if the depth limit is reached
-		if (depth != null && maxDepth != null || (depth >= maxDepth)) {
-			return HeuristicFunction(move, board, isMin);
 		}
 		
 		if (alpha == null || beta == null) {
 			alpha = minScore;
 			beta = maxScore;
 		}
-		
-		BuildChildNodes();
 		
 		// for the maximum case
 		if (!isMin) {
@@ -117,7 +164,6 @@ public abstract class MinimaxTree  {
 			}
 			return maxA;
 		}
-		
 		// for minimum case
 		int min = maxScore;
 		int maxB = maxScore;
@@ -138,10 +184,18 @@ public abstract class MinimaxTree  {
 		
 	}
 	
+	/** 
+	 * returns the best move found amongst children
+	 * @return
+	 */
 	public Move BestMove() {
 		return bestMove.GetMove();
 	}
 	
+	/**
+	 * returns the move
+	 * @return
+	 */
 	public Move GetMove() {
 		return this.move;
 	}	
