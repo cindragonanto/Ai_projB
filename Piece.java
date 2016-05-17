@@ -1,4 +1,4 @@
-package aiproj.hexifence.cinanto;
+package aiproj.hexifence;
 /*
  *   Piece:
  *      Define types of states that can appear on a board

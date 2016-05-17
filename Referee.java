@@ -1,4 +1,4 @@
-package aiproj.hexifence.cinanto;
+package aiproj.hexifence;
 
 /*   
  *   Referee:
