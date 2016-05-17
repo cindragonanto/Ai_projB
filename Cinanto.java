@@ -1,4 +1,4 @@
-package ai;
+package aiproj.hexifence.cinanto;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -6,7 +6,12 @@ import java.util.List;
 import java.util.Vector;
 
 import ai.*;
-
+/** CINANTO AGENT
+ * 
+ * @author Cinanto
+ * @author campbellw
+ *
+ */
 public class Cinanto implements Player{
 
 	//n is the size of the board

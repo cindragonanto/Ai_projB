@@ -1,4 +1,4 @@
-package ai;
+package aiproj.hexifence.cinanto;
 
 
 import java.util.Scanner;
@@ -133,6 +133,10 @@ public class Board
 		return capturableCount;
 	}
 	
+	public static boolean canAccept(int x, int y, int size) {
+		return (Math.abs(x-y) < 2*size - 1);
+	}
+	
 	/**
 	 * check the validity of coordinates
 	 * @param x int x-coordinate
@@ -168,6 +172,61 @@ public class Board
 		}
 		return true;
 	}
+	
+	public static boolean isShared(int x, int y, char[][] array) {
+		// for each position case, check if the adjacent cells can be captured
+		if (x%2 == 0 && y%2 == 0)
+		{
+			return (array[x][y] == '+' && canGet(x-1,y-1, array) && canGet(x+1,y+1, array));
+		}
+		if (x%2 == 0 && y%2 != 0)
+		{
+			return (array[x][y] == '+' && canGet(x-1,y, array) && canGet(x+1,y, array));
+		}
+		if (x%2 != 0 && y%2 == 0)
+		{
+			return (array[x][y] == '+' && canGet(x,y-1, array) && canGet(x,y+1, array));
+		}
+		return true;
+	}
+	
+	public int getSize() {
+		return size;
+	}
+	
+	public char[][] getContent() {
+		return array;
+	}
+	
+	public static boolean canGet(int x, int y, char[][] array) {
+		int emptyCount = 0;
+		// iterate through the surrounding positions
+        for (int i = -1; i <= 1; i++)
+        {
+        	for (int j = -1; j <= 1; j++)
+        	{
+        		// for each edge, if it is empty (signified by +), if so add to the count of empty edges
+        		if (i+j!=0 && array[x+i][y+j] == ('+'))
+        		{
+        			emptyCount += 1;
+        			// return false if there is more than one empty edge
+        			if (emptyCount > 1)
+        			{    
+        				return false;
+        			}
+        		}
+        	}
+ 
+        }
+        // if there is only one empty edge, it is capturable
+        if (emptyCount == 1)
+        {
+        	return true;
+        }
+        // if this is reached, it must be false (empty count is 0)
+        return false;
+	}
+		
 	/**
 	 * check if a cell can be captured with one move
 	 * @param x int x-coordinate
@@ -193,7 +252,6 @@ public class Board
         			}
         		}
         	}
- 
         }
         // if there is only one empty edge, it is capturable
         if (emptyCount == 1)

@@ -1,4 +1,4 @@
-package ai;
+package aiproj.hexifence.cinanto;
 
 import java.util.ArrayList;
 import java.util.List;

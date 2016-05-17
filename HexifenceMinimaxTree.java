@@ -1,4 +1,4 @@
-package ai;
+package aiproj.hexifence.cinanto;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,10 +21,12 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 	private final int p;
 	private static int maxDepth = 2;
 	
-	private static double chainAvgConst1 = 0.3;
-	private static double chainAvgConst2 = 5;
-	
-	private final static int winScore = 10;
+	private static final double chainAvgConst1 = 0.3;
+	private static final double chainAvgConst2 = 5;
+	private static final double greedyConst = 2;
+	private static final double chainConst = 1;
+	private static final double chainModWeight = 2;
+	private final static int winScore = 100;
 	
 	public static void PrintMove(Move move) {
 		System.out.println(move.Col + ", " + move.Row + " for " + move.P);
@@ -136,15 +138,21 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 	@Override
 	protected int HeuristicFunction(Move move, char[][] board, 
 			boolean isMin) {
-		int score = GreedyHeuristic(move, board, isMin)+
-				ChainHeuristicFunction(move,board,isMin);
+		
+		double score = greedyConst * GreedyHeuristic(move, board, isMin)+
+				chainConst * ChainHeuristicFunction(move,board,isMin);
 		System.out.println("Win score: " + score);
+		
 		if (score >= winScore-1) return winScore - 1;
 		if (score <= -winScore+1) return -winScore +1;
 		
-		return score;
+		return (int) score;
 	}
 
+	/**
+	 * Returns the number of chains
+	 * @return
+	 */
 	private List<Chain> getChains() {
 		// find any cells that are 1 piece from capture
 		List<Chain> temp = new ArrayList<Chain>();
@@ -158,7 +166,7 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 		for (int i = 1; i < board.length; i += 2) {
 			for (int j = 1; j < board.length; j += 2) {
 				if ((board[i][j] != 'r') && (board[i][j] != 'b') && 
-						CellEdges(board,i,j) == 5) {
+						CellEdges(board,i,j) == 4) {
 					// iterate through neighbouring cells to find chains
 					// which exist where the neighbouring cell shares an
 					// empty edge and has 4 taken edges
@@ -193,7 +201,6 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 				}
 			}
 		}
-		
 		return temp;
 	}
 	
@@ -277,6 +284,7 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 		}
 		
 		double chainAvgSize = (double) chainSize /  (double) chainCount;
+		if (chainAvgSize == 0) chainAvgSize = 1;
 		
 		// blue moves first
 		if (playerP == Piece.BLUE) {
@@ -286,8 +294,10 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 		}
 		
 		// adjust these weights
-		if (isMin) return (chainCount%2 == 1 ? -2 : 2) + (int) chainAvgSize ;
-		return (chainCount%2 == 1 ? 2 : -2) + (int) chainAvgSize; 
+		if (isMin) return (int) (chainCount%2 == 1 ? -chainModWeight :
+			chainModWeight) + (int) chainAvgSize ;
+		return (int) (chainCount%2 == 1 ? chainModWeight : -chainModWeight)
+				+ (int) chainAvgSize; 
 	}
 	
 	@Override

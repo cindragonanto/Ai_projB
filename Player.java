@@ -1,4 +1,4 @@
-package aiproj.hexifence;
+package aiproj.hexifence.cinanto;
 
 import java.io.PrintStream;
 
