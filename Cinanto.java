@@ -1,4 +1,4 @@
-package aiproj.hexifence;
+package aiproj.hexifence.cinanto;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import ai.*;
  * 
  * @author Cinanto
  * @author campbellw
- *
+638739 *
  */
 public class Cinanto implements Player{
 

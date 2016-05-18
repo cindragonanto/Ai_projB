@@ -1,11 +1,11 @@
-package aiproj.hexifence;
+package aiproj.hexifence.cinanto;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * MinimaxTree class
- * @author campbellw
+ * @author campbellw638739
  *
  */
 public abstract class MinimaxTree  {

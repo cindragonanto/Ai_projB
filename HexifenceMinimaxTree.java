@@ -1,4 +1,4 @@
-package aiproj.hexifence;
+package aiproj.hexifence.cinanto;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,7 +9,7 @@ import ai.*;
 
 /**
  * Hexifence MinimaxTree implementation
- * @author campbellw
+ * @author campbellw638739
  *
  */
 public final class HexifenceMinimaxTree extends MinimaxTree {

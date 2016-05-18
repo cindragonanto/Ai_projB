@@ -1,11 +1,11 @@
-package aiproj.hexifence;
+package aiproj.hexifence.cinanto;
 
 
 import java.util.Scanner;
 
 /**
  * Representation of a Hexifence board
- * @author Cindy Inanto(cinanto), Campbell Wright(campbellw)
+ * @author Cindy Inanto(cinanto), Campbell Wright(campbellw 638739)
  * @version 0.0.1
  * @see HexifenceSolution
  */
