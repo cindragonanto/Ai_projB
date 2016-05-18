@@ -5,4 +5,6 @@ A greedy heuristic function which returns the difference between the number of c
 We then balance this with a chain heuristic which aims to get the chains in a position that is favourable to the agent. Because it is optimal for the player to move with an odd number of chains, while the opponent with an even number of chains,  this provides a heuristic which can be taken into account in play. Unfortunately in practice, this is not that effective.
 The last aspect is chain length - the agent aims to optimise its chain length, while having a short chain length for the opponent. This heuristic is not ideal either, but it balances the greedy aspects of the first heuristic.
 
-These three aspects are weighted against each other, with the weights determined through playing the game multiple times. It was difficult to balance them, however.
+These three aspects are weighted against each other, with the weights determined through playing the game multiple times. It was difficult to balance them, however. 
+
+One last aspect is the depth of the minimax tree where the heuristic is called is dependent on the number of moves to search - so accuracy and lookahead depth increases with progression of the game, which helps to improve success as the final moves are crucial.
