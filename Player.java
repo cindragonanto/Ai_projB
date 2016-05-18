@@ -1,6 +1,9 @@
 package aiproj.hexifence.cinanto;
 
 import java.io.PrintStream;
+import aiproj.hexifence.cinanto.Player;
+import aiproj.hexifence.cinanto.Piece;
+import aiproj.hexifence.cinanto.Move;
 
 /*   
  *   Player Interface:

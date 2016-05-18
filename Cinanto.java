@@ -3,9 +3,11 @@ package aiproj.hexifence.cinanto;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
+import aiproj.hexifence.cinanto.Player;
+import aiproj.hexifence.cinanto.Piece;
+import aiproj.hexifence.cinanto.Move;
+import aiproj.hexifence.cinanto.HexifenceMinimaxTree;
 
-import ai.*;
 /** CINANTO AGENT
  * 
  * @author Cinanto

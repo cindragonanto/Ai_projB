@@ -3,6 +3,9 @@ package aiproj.hexifence.cinanto;
 import java.util.ArrayList;
 import java.util.List;
 
+import aiproj.hexifence.cinanto.Player;
+import aiproj.hexifence.cinanto.Piece;
+import aiproj.hexifence.cinanto.Move;
 /**
  * MinimaxTree class
  * @author campbellw638739

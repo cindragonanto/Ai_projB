@@ -5,7 +5,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import ai.*;
+import aiproj.hexifence.cinanto.Player;
+import aiproj.hexifence.cinanto.Piece;
+import aiproj.hexifence.cinanto.Move;
+import aiproj.hexifence.cinanto.Cinanto;
 
 /**
  * Hexifence MinimaxTree implementation
@@ -21,7 +24,7 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 	private final int p;
 	
 	// minimum depth for minimax
-	private static final int minDepth = 4;
+	private static final int minDepth = 3;
 	
 	// weight for chain average heuristic (blue)
 	private static final double chainAvgConst1 = 0.3;
@@ -34,7 +37,7 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 	// weight for chain mod (odd/even)
 	private static final double chainModWeight = 2;
 	// minimum depth for minimax
-	private static final double depthFactor = 0.3;
+	private static final double depthFactor = 0.15;
 	
 	// number of moves below which minimax will look deeper than depthFactor
 	private static final int maxDepthMovesConst = 40;

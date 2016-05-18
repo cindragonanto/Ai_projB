@@ -8,3 +8,6 @@ The last aspect is chain length - the agent aims to optimise its chain length, w
 These three aspects are weighted against each other, with the weights determined through playing the game multiple times. It was difficult to balance them, however. 
 
 One last aspect is the depth of the minimax tree where the heuristic is called is dependent on the number of moves to search - so accuracy and lookahead depth increases with progression of the game, which helps to improve success as the final moves are crucial.
+
+campbellw
+638739

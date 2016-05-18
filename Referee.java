@@ -1,5 +1,9 @@
 package aiproj.hexifence.cinanto;
 
+import aiproj.hexifence.cinanto.Player;
+import aiproj.hexifence.cinanto.Piece;
+import aiproj.hexifence.cinanto.Move;
+
 /*   
  *   Referee:
  *      A mediator between two players. It is responsible to initialize 
