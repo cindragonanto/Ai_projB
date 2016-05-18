@@ -19,14 +19,29 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 	
 	// piece code for this current move
 	private final int p;
-	private static int maxDepth = 2;
 	
+	// minimum depth for minimax
+	private static final int minDepth = 4;
+	
+	// weight for chain average heuristic (blue)
 	private static final double chainAvgConst1 = 0.3;
+	// weight for chain average heuristic (red)
 	private static final double chainAvgConst2 = 5;
+	// weight for greedy heuristic
 	private static final double greedyConst = 2;
-	private static final double chainConst = 1;
+	// weight for chain heuristic
+	private static final double chainConst = 3;
+	// weight for chain mod (odd/even)
 	private static final double chainModWeight = 2;
-	private final static int winScore = 100;
+	// minimum depth for minimax
+	private static final double depthFactor = 0.3;
+	
+	// number of moves below which minimax will look deeper than depthFactor
+	private static final int maxDepthMovesConst = 40;
+	// maximum depth for minimax
+	private static final int maxDepth = 11;
+	
+	private static final int winScore = 100;
 	
 	public static void PrintMove(Move move) {
 		System.out.println(move.Col + ", " + move.Row + " for " + move.P);
@@ -64,10 +79,16 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 		List<Move> moves = Cinanto.getMoves(board, p);
 		Collections.shuffle(moves);
 		
+		int moveSize = moves.size();
+		int depth = minDepth + (int) (depthFactor * (maxDepthMovesConst - moves.size()));
+		
+		if (depth < minDepth) depth = minDepth;
+		if (depth > maxDepth) depth = maxDepth;
+		
 		// iterate through each possible move
 		for (Move i : moves) {
 			temp = new HexifenceMinimaxTree(true, board, i, p);
-			if ((tempScore = temp.GetScoreABP(0,maxDepth,null,null)) > 
+			if ((tempScore = temp.GetScoreABP(0,minDepth,null,null)) > 
 			bestScore) {
 				bestScore = tempScore;
 				bestMove = i;
@@ -89,7 +110,7 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 			boolean isMin) {
 		int outcome = Cinanto.getWinner(board);
 		if (outcome == Piece.INVALID) {
-			return -999;
+			return MinimaxTree.minScore;
 		}
 		
 		// check who has won
@@ -304,7 +325,7 @@ public final class HexifenceMinimaxTree extends MinimaxTree {
 	protected void BuildChildNodes() {
 		
 		for (Move i : Cinanto.getMoves(board, p)) {
-			System.out.println("Checking move: " + i.Col + ", " + i.Row);
+			//System.out.println("Checking move: " + i.Col + ", " + i.Row);
 			if (Cinanto.isCaptureMove(board, i)) nodes.add(new 
 					HexifenceMinimaxTree(isMin, board, i, p));
 			else nodes.add(new HexifenceMinimaxTree(!isMin,
